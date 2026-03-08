@@ -1,0 +1,771 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR forge · brand name + download</title>
+    <!-- Montserrat font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+    <style>
+        * {
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(145deg, #f5f7fa 0%, #e9ecf0 100%);
+            min-height: 100vh;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 16px;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(8px);
+            border-radius: 32px;
+            box-shadow: 0 20px 35px -8px rgba(0, 0, 0, 0.2), 0 4px 8px rgba(0, 0, 0, 0.05);
+            padding: 32px;
+            max-width: 600px;
+            width: 100%;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        h1 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin: 0 0 8px 0;
+            color: #1e293b;
+            letter-spacing: -0.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        h1 span {
+            background: #2d3b4f;
+            color: white;
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 4px 12px;
+            border-radius: 40px;
+        }
+
+        .sub {
+            color: #475569;
+            margin-bottom: 24px;
+            font-size: 1rem;
+            border-left: 4px solid #3b82f6;
+            padding-left: 16px;
+            background: rgba(59, 130, 246, 0.05);
+            border-radius: 0 8px 8px 0;
+        }
+
+        .tabs {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            border-bottom: 2px solid #e2e8f0;
+            padding-bottom: 8px;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: none;
+            padding: 10px 24px;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            border-radius: 40px;
+            transition: 0.2s;
+        }
+
+        .tab-btn.active {
+            background: #1e293b;
+            color: white;
+            box-shadow: 0 4px 10px -2px #1e293b80;
+        }
+
+        .tab-panel {
+            display: none;
+            margin-bottom: 24px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 24px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .tab-panel.active {
+            display: block;
+        }
+
+        .color-options {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .color-option {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+            font-weight: 500;
+        }
+
+        .color-option input[type="radio"] {
+            appearance: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 3px solid transparent;
+            transition: 0.1s;
+            cursor: pointer;
+        }
+
+        .color-option input[type="radio"]:checked {
+            border-color: #1e293b;
+            box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
+        }
+
+        /* New color swatches */
+        .color-red { background: #ff0000; }
+        .color-blue { background: #0044ff; }
+        .color-green { background: #00ff62; }
+        .color-black { background: #000000; }
+
+        .logo-upload-area {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+        }
+
+        .file-input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        #logoFile {
+            flex: 1;
+            padding: 10px;
+            border: 1px solid #cbd5e1;
+            border-radius: 60px;
+            background: white;
+            font-size: 0.9rem;
+        }
+
+        .logo-preview {
+            width: 60px;
+            height: 60px;
+            border-radius: 12px;
+            border: 2px dashed #94a3b8;
+            object-fit: contain;
+            background: #f1f5f9;
+            display: none;
+        }
+
+        .logo-preview.show {
+            display: block;
+        }
+
+        .remove-logo {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: 0.1s;
+            border: 1px solid #dc2626;
+        }
+
+        .remove-logo:hover {
+            background: #dc2626;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: 600;
+            color: #1e293b;
+            font-size: 0.95rem;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        #linkInput {
+            flex: 1;
+            padding: 15px 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 60px;
+            font-size: 1rem;
+            outline: none;
+            background: white;
+        }
+
+        #linkInput:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+
+        #generateBtn {
+            background: #1e293b;
+            border: none;
+            border-radius: 60px;
+            padding: 15px 32px;
+            font-weight: 600;
+            font-size: 1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 8px 14px -6px #1e293b80;
+            white-space: nowrap;
+        }
+
+        #generateBtn:hover {
+            background: #0f172a;
+            transform: scale(1.02);
+        }
+
+        /* Brand name input */
+        .brand-group {
+            margin-bottom: 24px;
+        }
+
+        #brandInput {
+            width: 100%;
+            padding: 12px 18px;
+            border: 2px solid #d1d5db;
+            border-radius: 60px;
+            font-size: 1rem;
+            outline: none;
+            background: white;
+        }
+
+        #brandInput:focus {
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 4px rgba(59,130,246,0.15);
+        }
+
+        .qr-container {
+            background: white;
+            border-radius: 28px;
+            padding: 30px 20px 20px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            border: 2px dashed #cbd5e1;
+            min-height: 280px;
+            transition: 0.2s;
+            margin-bottom: 8px;
+        }
+
+        #qrImage {
+            max-width: 250px;
+            width: 100%;
+            height: auto;
+            image-rendering: crisp-edges;
+            border-radius: 16px;
+            padding: 8px;
+            background: white;
+            box-shadow: 0 12px 28px -10px rgba(0, 0, 0, 0.2);
+            display: none;
+        }
+
+        .placeholder {
+            color: #64748b;
+            font-weight: 400;
+            font-size: 1.1rem;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .placeholder svg {
+            opacity: 0.5;
+            width: 64px;
+            height: 64px;
+        }
+
+        /* Brand preview below QR */
+        .brand-preview {
+            font-family: 'Montserrat', sans-serif;
+            font-weight: 700;
+            color: #000000;
+            font-size: 20px;
+            text-align: center;
+            margin-top: 12px;
+            max-width: 250px;
+            word-break: break-word;
+            display: none;
+        }
+
+        .brand-preview.show {
+            display: block;
+        }
+
+        .download-section {
+            display: flex;
+            justify-content: center;
+            margin: 16px 0 8px;
+        }
+
+        #downloadBtn {
+            background: #059669;
+            border: none;
+            border-radius: 60px;
+            padding: 14px 40px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: white;
+            cursor: pointer;
+            transition: 0.15s;
+            box-shadow: 0 8px 14px -6px #047857;
+            border: 1px solid #10b981;
+            display: none;
+            align-items: center;
+            gap: 8px;
+        }
+
+        #downloadBtn:hover {
+            background: #047857;
+            transform: scale(1.02);
+        }
+
+        #downloadBtn.show {
+            display: inline-flex;
+        }
+
+        .error-message {
+            color: #b91c1c;
+            background: #fee2e2;
+            border-radius: 40px;
+            padding: 10px 18px;
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 12px;
+            border: 1px solid #fecaca;
+            display: none;
+        }
+
+        .footer-note {
+            text-align: center;
+            margin-top: 18px;
+            color: #64748b;
+            font-size: 0.85rem;
+            border-top: 1px solid #e2e8f0;
+            padding-top: 18px;
+        }
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.1/build/qrcode.min.js"></script>
+</head>
+<body>
+    <div class="card">
+        <h1>
+            QR forge
+            <span>v5 · brand name</span>
+        </h1>
+        <div class="sub">
+            ⚡ Choose color, add logo, write brand name – download with text
+        </div>
+
+        <!-- Tabs (Color / Logo) -->
+        <div class="tabs">
+            <button class="tab-btn active" id="tabColor">🎨 Color</button>
+            <button class="tab-btn" id="tabLogo">🖼️ Add LOGO</button>
+        </div>
+
+        <!-- Color panel -->
+        <div class="tab-panel active" id="panelColor">
+            <div class="color-options">
+                <label class="color-option">
+                    <input type="radio" name="qrColor" value="#ff0000" class="color-red" checked>
+                    <span>Red</span>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="qrColor" value="#0044ff" class="color-blue">
+                    <span>Blue</span>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="qrColor" value="#00ff62" class="color-green">
+                    <span>Green</span>
+                </label>
+                <label class="color-option">
+                    <input type="radio" name="qrColor" value="#000000" class="color-black">
+                    <span>Black</span>
+                </label>
+            </div>
+        </div>
+
+        <!-- Logo panel -->
+        <div class="tab-panel" id="panelLogo">
+            <div class="logo-upload-area">
+                <div class="file-input-wrapper">
+                    <input type="file" id="logoFile" accept="image/*">
+                    <img id="logoPreview" class="logo-preview" alt="logo preview">
+                    <button id="removeLogoBtn" class="remove-logo">✖ Remove</button>
+                </div>
+                <p style="margin:0; color:#475569; font-size:0.9rem;">Logo will be centered (max 50x50). Use high‑contrast images.</p>
+            </div>
+        </div>
+
+        <!-- Link input + generate -->
+        <div class="input-group">
+            <label for="linkInput">🔗 Your URL or text</label>
+            <div class="input-wrapper">
+                <input type="url" id="linkInput" placeholder="https://example.com" autocomplete="off">
+                <button id="generateBtn">Generate QR</button>
+            </div>
+        </div>
+
+        <!-- Brand name input -->
+        <div class="brand-group">
+            <label for="brandInput">🏷️ Brand name (optional) – appears below QR</label>
+            <input type="text" id="brandInput" placeholder="e.g. ACME Inc." autocomplete="off">
+        </div>
+
+        <!-- QR display + brand preview -->
+        <div class="qr-container">
+            <img id="qrImage" alt="QR Code" />
+            <div class="placeholder" id="placeholderMsg">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
+                    <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" />
+                    <path d="M8 8h2v2H8zM12 8h2v2h-2zM16 8h2v2h-2zM8 12h2v2H8zM12 12h2v2h-2zM16 12h2v2h-2zM8 16h2v2H8zM12 16h2v2h-2zM16 16h2v2h-2z" fill="currentColor" />
+                </svg>
+                <span>Your QR code will appear here</span>
+            </div>
+            <div class="brand-preview" id="brandPreview"></div>
+        </div>
+
+        <!-- Download button -->
+        <div class="download-section">
+            <button id="downloadBtn">
+                ⬇️ Download QR
+            </button>
+        </div>
+
+        <div class="error-message" id="errorMsg"></div>
+        <div class="footer-note">
+            ✨ brand name appears in Montserrat bold black – included when you download
+        </div>
+    </div>
+
+    <!-- Hidden canvas for logo overlay and download composition -->
+    <canvas id="qrCanvas" width="250" height="250" style="display:none;"></canvas>
+    <canvas id="downloadCanvas" width="250" height="300" style="display:none;"></canvas>
+
+    <script>
+        (function() {
+            // DOM elements
+            const linkInput = document.getElementById('linkInput');
+            const brandInput = document.getElementById('brandInput');
+            const generateBtn = document.getElementById('generateBtn');
+            const qrImage = document.getElementById('qrImage');
+            const placeholderMsg = document.getElementById('placeholderMsg');
+            const errorMsg = document.getElementById('errorMsg');
+            const brandPreview = document.getElementById('brandPreview');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const canvas = document.getElementById('qrCanvas');          // for logo overlay
+            const ctx = canvas.getContext('2d');
+            const downloadCanvas = document.getElementById('downloadCanvas');
+            const downloadCtx = downloadCanvas.getContext('2d');
+
+            // Tabs
+            const tabColor = document.getElementById('tabColor');
+            const tabLogo = document.getElementById('tabLogo');
+            const panelColor = document.getElementById('panelColor');
+            const panelLogo = document.getElementById('panelLogo');
+
+            // Color radios (updated hex values)
+            const colorRadios = document.querySelectorAll('input[name="qrColor"]');
+
+            // Logo elements
+            const logoFile = document.getElementById('logoFile');
+            const logoPreview = document.getElementById('logoPreview');
+            const removeLogoBtn = document.getElementById('removeLogoBtn');
+
+            // State
+            let selectedColor = '#ff0000';  // default red (#ff0000)
+            let logoDataURL = null;
+
+            // ----- Tab switching -----
+            function activateTab(activeTab) {
+                tabColor.classList.remove('active');
+                tabLogo.classList.remove('active');
+                panelColor.classList.remove('active');
+                panelLogo.classList.remove('active');
+
+                if (activeTab === 'color') {
+                    tabColor.classList.add('active');
+                    panelColor.classList.add('active');
+                } else {
+                    tabLogo.classList.add('active');
+                    panelLogo.classList.add('active');
+                }
+            }
+
+            tabColor.addEventListener('click', () => activateTab('color'));
+            tabLogo.addEventListener('click', () => activateTab('logo'));
+
+            // ----- Helper: update UI after generation -----
+            function showQRImage(dataUrl) {
+                qrImage.src = dataUrl;
+                qrImage.style.display = 'inline-block';
+                placeholderMsg.style.display = 'none';
+                errorMsg.style.display = 'none';
+                downloadBtn.classList.add('show');
+
+                // Update brand preview (if any)
+                updateBrandPreview();
+            }
+
+            function showPlaceholder() {
+                qrImage.style.display = 'none';
+                placeholderMsg.style.display = 'flex';
+                errorMsg.style.display = 'none';
+                downloadBtn.classList.remove('show');
+                brandPreview.classList.remove('show');
+                brandPreview.textContent = '';
+            }
+
+            function showError(text) {
+                errorMsg.textContent = text;
+                errorMsg.style.display = 'block';
+                qrImage.style.display = 'none';
+                placeholderMsg.style.display = 'none';
+                downloadBtn.classList.remove('show');
+                brandPreview.classList.remove('show');
+                brandPreview.textContent = '';
+            }
+
+            // Update brand preview text (shown below QR)
+            function updateBrandPreview() {
+                const brandText = brandInput.value.trim();
+                if (brandText) {
+                    brandPreview.textContent = brandText;
+                    brandPreview.classList.add('show');
+                } else {
+                    brandPreview.classList.remove('show');
+                    brandPreview.textContent = '';
+                }
+            }
+
+            // ----- Core generation (with logo overlay) -----
+            async function generateQR(text) {
+                if (!text.trim()) {
+                    showError('Please enter a link or some text.');
+                    return;
+                }
+
+                const options = {
+                    width: 250,
+                    margin: 1,
+                    color: {
+                        dark: selectedColor,
+                        light: '#ffffff'
+                    },
+                    errorCorrectionLevel: 'H'
+                };
+
+                try {
+                    const baseDataURL = await QRCode.toDataURL(text, options);
+
+                    if (!logoDataURL) {
+                        // No logo: just show the QR
+                        showQRImage(baseDataURL);
+                        return;
+                    }
+
+                    // Composite with logo on canvas
+                    const qrImg = new Image();
+                    qrImg.src = baseDataURL;
+                    await new Promise((resolve, reject) => {
+                        qrImg.onload = resolve;
+                        qrImg.onerror = reject;
+                    });
+
+                    ctx.clearRect(0, 0, canvas.width, canvas.height);
+                    ctx.drawImage(qrImg, 0, 0, canvas.width, canvas.height);
+
+                    const logoImg = new Image();
+                    logoImg.src = logoDataURL;
+                    await new Promise((resolve, reject) => {
+                        logoImg.onload = resolve;
+                        logoImg.onerror = reject;
+                    });
+
+                    // Logo size: max 50x50, keep aspect
+                    let logoWidth = 50;
+                    let logoHeight = 50;
+                    if (logoImg.width > logoImg.height) {
+                        logoHeight = (logoImg.height / logoImg.width) * 50;
+                    } else {
+                        logoWidth = (logoImg.width / logoImg.height) * 50;
+                    }
+
+                    const x = (canvas.width - logoWidth) / 2;
+                    const y = (canvas.height - logoHeight) / 2;
+                    ctx.drawImage(logoImg, x, y, logoWidth, logoHeight);
+
+                    const finalDataURL = canvas.toDataURL('image/png');
+                    showQRImage(finalDataURL);
+
+                } catch (err) {
+                    console.error(err);
+                    showError('Failed to generate QR. Check console or try a different logo.');
+                }
+            }
+
+            // ----- Download with optional brand name -----
+            async function downloadQR() {
+                if (!qrImage.src || qrImage.style.display === 'none') return;
+
+                const brandText = brandInput.value.trim();
+
+                if (!brandText) {
+                    // No brand name: download QR image directly
+                    const link = document.createElement('a');
+                    link.href = qrImage.src;
+                    link.download = 'qrcode.png';
+                    document.body.appendChild(link);
+                    link.click();
+                    document.body.removeChild(link);
+                    return;
+                }
+
+                // Brand name present: compose on downloadCanvas
+                // Set canvas size: width 250, height 250 + padding + text height
+                const paddingTop = 10;    // space above text
+                const textHeight = 30;     // estimated, will adjust based on font size
+                const paddingBottom = 10;
+                const totalHeight = 250 + paddingTop + textHeight + paddingBottom;
+
+                downloadCanvas.width = 250;
+                downloadCanvas.height = totalHeight;
+                downloadCtx.clearRect(0, 0, downloadCanvas.width, downloadCanvas.height);
+
+                // Fill background white (to match QR background)
+                downloadCtx.fillStyle = '#ffffff';
+                downloadCtx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
+
+                // Draw the QR image (from qrImage.src) onto the canvas
+                const qrImg = new Image();
+                qrImg.src = qrImage.src;
+                await new Promise((resolve, reject) => {
+                    qrImg.onload = resolve;
+                    qrImg.onerror = reject;
+                });
+                downloadCtx.drawImage(qrImg, 0, 0, 250, 250);
+
+                // Set font to Montserrat Bold
+                downloadCtx.font = 'bold 20px "Montserrat", sans-serif';
+                downloadCtx.fillStyle = '#000000';
+                downloadCtx.textAlign = 'center';
+
+                // Measure text and adjust font size if too wide
+                let fontSize = 20;
+                let textWidth = downloadCtx.measureText(brandText).width;
+                while (textWidth > 240 && fontSize > 10) {
+                    fontSize -= 1;
+                    downloadCtx.font = `bold ${fontSize}px "Montserrat", sans-serif`;
+                    textWidth = downloadCtx.measureText(brandText).width;
+                }
+
+                // Draw text centered below QR
+                const textX = 125; // center of 250px
+                const textY = 250 + paddingTop + (textHeight / 2) + 5; // roughly middle of text area
+                downloadCtx.fillText(brandText, textX, textY);
+
+                // Export and download
+                const finalDataURL = downloadCanvas.toDataURL('image/png');
+                const link = document.createElement('a');
+                link.href = finalDataURL;
+                link.download = 'qrcode-with-brand.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+
+            downloadBtn.addEventListener('click', downloadQR);
+
+            // ----- Auto‑update triggers -----
+
+            // Color change
+            colorRadios.forEach(radio => {
+                radio.addEventListener('change', (e) => {
+                    selectedColor = e.target.value;
+                    if (linkInput.value.trim() !== '') {
+                        generateQR(linkInput.value);
+                    }
+                });
+            });
+
+            // Logo selection
+            logoFile.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    logoDataURL = event.target.result;
+                    logoPreview.src = logoDataURL;
+                    logoPreview.classList.add('show');
+                    if (linkInput.value.trim() !== '') {
+                        generateQR(linkInput.value);
+                    }
+                };
+                reader.readAsDataURL(file);
+            });
+
+            // Remove logo
+            removeLogoBtn.addEventListener('click', () => {
+                logoDataURL = null;
+                logoFile.value = '';
+                logoPreview.src = '';
+                logoPreview.classList.remove('show');
+
+                if (linkInput.value.trim() !== '') {
+                    generateQR(linkInput.value);
+                }
+            });
+
+            // Brand name input changes: update preview only (no regeneration needed)
+            brandInput.addEventListener('input', updateBrandPreview);
+
+            // Generate button
+            generateBtn.addEventListener('click', () => {
+                generateQR(linkInput.value);
+            });
+
+            // Enter key in link input
+            linkInput.addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    generateQR(linkInput.value);
+                }
+            });
+
+            // Initialize default color (already set)
+        })();
+    </script>
+</body>
+</html>
