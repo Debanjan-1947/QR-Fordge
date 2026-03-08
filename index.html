@@ -3,13 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>QR forge · brand name + download</title>
+    
+    <!-- SEO essentials -->
+    <title>QR Code Generator with Logo, Color & Brand Name – Free No Login</title>
+    <meta name="description" content="Create custom QR codes with your logo, choose from red, blue, green, or black colors, add a brand name. Download instantly. No login required. Free tool by Debanjan.">
+    <meta name="robots" content="index, follow">
+    <meta name="keywords" content="QR code generator, custom QR, logo in QR, color QR, brand name, free, no login">
+
+    <!-- Open Graph (for social sharing) -->
+    <meta property="og:title" content="QR forge – Custom QR Code Generator with Logo & Color">
+    <meta property="og:description" content="Generate beautiful QR codes with your logo, pick a color, add your brand name. Download with one click. No sign-up.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/qr-forge"> <!-- replace with actual URL -->
+    <meta property="og:image" content="https://yourdomain.com/qr-forge-preview.png"> <!-- optional preview image -->
+
     <!-- Montserrat font -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
+
     <style>
-        /* (all styles unchanged) */
+        /* (all styles unchanged – keeping your exact design) */
         * {
             box-sizing: border-box;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -419,7 +433,7 @@
             <div class="logo-upload-area">
                 <div class="file-input-wrapper">
                     <input type="file" id="logoFile" accept="image/*">
-                    <img id="logoPreview" class="logo-preview" alt="logo preview">
+                    <img id="logoPreview" class="logo-preview" alt="Logo preview">
                     <button id="removeLogoBtn" class="remove-logo">✖ Remove</button>
                 </div>
                 <p style="margin:0; color:#475569; font-size:0.9rem;">Logo will be centered (max 50x50). Use high‑contrast images.</p>
@@ -443,7 +457,8 @@
 
         <!-- QR display + brand preview -->
         <div class="qr-container">
-            <img id="qrImage" alt="QR Code" />
+            <!-- The QR image will have a descriptive alt text set dynamically -->
+            <img id="qrImage" alt="Generated QR code with your customizations" />
             <div class="placeholder" id="placeholderMsg">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2">
                     <rect x="4" y="4" width="16" height="16" rx="2" stroke="currentColor" />
@@ -474,7 +489,6 @@
     <canvas id="downloadCanvas" width="250" height="300" style="display:none;"></canvas>
 
     <script>
-        // (JavaScript remains exactly the same as before)
         (function() {
             const linkInput = document.getElementById('linkInput');
             const brandInput = document.getElementById('brandInput');
@@ -527,6 +541,14 @@
                 errorMsg.style.display = 'none';
                 downloadBtn.classList.add('show');
                 updateBrandPreview();
+
+                // Improve alt text for SEO
+                const linkText = linkInput.value.trim();
+                if (linkText) {
+                    qrImage.alt = `QR code for ${linkText}`;
+                } else {
+                    qrImage.alt = 'Generated QR code';
+                }
             }
 
             function showPlaceholder() {
