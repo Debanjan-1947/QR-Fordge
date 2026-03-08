@@ -9,6 +9,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap" rel="stylesheet">
     <style>
+        /* (all styles unchanged) */
         * {
             box-sizing: border-box;
             font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
@@ -134,7 +135,6 @@
             box-shadow: 0 0 0 2px white, 0 0 0 4px currentColor;
         }
 
-        /* New color swatches */
         .color-red { background: #ff0000; }
         .color-blue { background: #0044ff; }
         .color-green { background: #00ff62; }
@@ -245,7 +245,6 @@
             transform: scale(1.02);
         }
 
-        /* Brand name input */
         .brand-group {
             margin-bottom: 24px;
         }
@@ -306,7 +305,6 @@
             height: 64px;
         }
 
-        /* Brand preview below QR */
         .brand-preview {
             font-family: 'Montserrat', sans-serif;
             font-weight: 700;
@@ -464,18 +462,20 @@
         </div>
 
         <div class="error-message" id="errorMsg"></div>
+
+        <!-- Updated footer with credit and no‑login message -->
         <div class="footer-note">
-            ✨ brand name appears in Montserrat bold black – included when you download
+            ✨ Created by Debanjan and use without Logging in
         </div>
     </div>
 
-    <!-- Hidden canvas for logo overlay and download composition -->
+    <!-- Hidden canvases -->
     <canvas id="qrCanvas" width="250" height="250" style="display:none;"></canvas>
     <canvas id="downloadCanvas" width="250" height="300" style="display:none;"></canvas>
 
     <script>
+        // (JavaScript remains exactly the same as before)
         (function() {
-            // DOM elements
             const linkInput = document.getElementById('linkInput');
             const brandInput = document.getElementById('brandInput');
             const generateBtn = document.getElementById('generateBtn');
@@ -484,30 +484,24 @@
             const errorMsg = document.getElementById('errorMsg');
             const brandPreview = document.getElementById('brandPreview');
             const downloadBtn = document.getElementById('downloadBtn');
-            const canvas = document.getElementById('qrCanvas');          // for logo overlay
+            const canvas = document.getElementById('qrCanvas');
             const ctx = canvas.getContext('2d');
             const downloadCanvas = document.getElementById('downloadCanvas');
             const downloadCtx = downloadCanvas.getContext('2d');
 
-            // Tabs
             const tabColor = document.getElementById('tabColor');
             const tabLogo = document.getElementById('tabLogo');
             const panelColor = document.getElementById('panelColor');
             const panelLogo = document.getElementById('panelLogo');
 
-            // Color radios (updated hex values)
             const colorRadios = document.querySelectorAll('input[name="qrColor"]');
-
-            // Logo elements
             const logoFile = document.getElementById('logoFile');
             const logoPreview = document.getElementById('logoPreview');
             const removeLogoBtn = document.getElementById('removeLogoBtn');
 
-            // State
-            let selectedColor = '#ff0000';  // default red (#ff0000)
+            let selectedColor = '#ff0000';
             let logoDataURL = null;
 
-            // ----- Tab switching -----
             function activateTab(activeTab) {
                 tabColor.classList.remove('active');
                 tabLogo.classList.remove('active');
@@ -526,15 +520,12 @@
             tabColor.addEventListener('click', () => activateTab('color'));
             tabLogo.addEventListener('click', () => activateTab('logo'));
 
-            // ----- Helper: update UI after generation -----
             function showQRImage(dataUrl) {
                 qrImage.src = dataUrl;
                 qrImage.style.display = 'inline-block';
                 placeholderMsg.style.display = 'none';
                 errorMsg.style.display = 'none';
                 downloadBtn.classList.add('show');
-
-                // Update brand preview (if any)
                 updateBrandPreview();
             }
 
@@ -557,7 +548,6 @@
                 brandPreview.textContent = '';
             }
 
-            // Update brand preview text (shown below QR)
             function updateBrandPreview() {
                 const brandText = brandInput.value.trim();
                 if (brandText) {
@@ -569,7 +559,6 @@
                 }
             }
 
-            // ----- Core generation (with logo overlay) -----
             async function generateQR(text) {
                 if (!text.trim()) {
                     showError('Please enter a link or some text.');
@@ -590,12 +579,10 @@
                     const baseDataURL = await QRCode.toDataURL(text, options);
 
                     if (!logoDataURL) {
-                        // No logo: just show the QR
                         showQRImage(baseDataURL);
                         return;
                     }
 
-                    // Composite with logo on canvas
                     const qrImg = new Image();
                     qrImg.src = baseDataURL;
                     await new Promise((resolve, reject) => {
@@ -613,7 +600,6 @@
                         logoImg.onerror = reject;
                     });
 
-                    // Logo size: max 50x50, keep aspect
                     let logoWidth = 50;
                     let logoHeight = 50;
                     if (logoImg.width > logoImg.height) {
@@ -635,14 +621,12 @@
                 }
             }
 
-            // ----- Download with optional brand name -----
             async function downloadQR() {
                 if (!qrImage.src || qrImage.style.display === 'none') return;
 
                 const brandText = brandInput.value.trim();
 
                 if (!brandText) {
-                    // No brand name: download QR image directly
                     const link = document.createElement('a');
                     link.href = qrImage.src;
                     link.download = 'qrcode.png';
@@ -652,10 +636,8 @@
                     return;
                 }
 
-                // Brand name present: compose on downloadCanvas
-                // Set canvas size: width 250, height 250 + padding + text height
-                const paddingTop = 10;    // space above text
-                const textHeight = 30;     // estimated, will adjust based on font size
+                const paddingTop = 10;
+                const textHeight = 30;
                 const paddingBottom = 10;
                 const totalHeight = 250 + paddingTop + textHeight + paddingBottom;
 
@@ -663,11 +645,9 @@
                 downloadCanvas.height = totalHeight;
                 downloadCtx.clearRect(0, 0, downloadCanvas.width, downloadCanvas.height);
 
-                // Fill background white (to match QR background)
                 downloadCtx.fillStyle = '#ffffff';
                 downloadCtx.fillRect(0, 0, downloadCanvas.width, downloadCanvas.height);
 
-                // Draw the QR image (from qrImage.src) onto the canvas
                 const qrImg = new Image();
                 qrImg.src = qrImage.src;
                 await new Promise((resolve, reject) => {
@@ -676,12 +656,10 @@
                 });
                 downloadCtx.drawImage(qrImg, 0, 0, 250, 250);
 
-                // Set font to Montserrat Bold
                 downloadCtx.font = 'bold 20px "Montserrat", sans-serif';
                 downloadCtx.fillStyle = '#000000';
                 downloadCtx.textAlign = 'center';
 
-                // Measure text and adjust font size if too wide
                 let fontSize = 20;
                 let textWidth = downloadCtx.measureText(brandText).width;
                 while (textWidth > 240 && fontSize > 10) {
@@ -690,12 +668,10 @@
                     textWidth = downloadCtx.measureText(brandText).width;
                 }
 
-                // Draw text centered below QR
-                const textX = 125; // center of 250px
-                const textY = 250 + paddingTop + (textHeight / 2) + 5; // roughly middle of text area
+                const textX = 125;
+                const textY = 250 + paddingTop + (textHeight / 2) + 5;
                 downloadCtx.fillText(brandText, textX, textY);
 
-                // Export and download
                 const finalDataURL = downloadCanvas.toDataURL('image/png');
                 const link = document.createElement('a');
                 link.href = finalDataURL;
@@ -707,9 +683,6 @@
 
             downloadBtn.addEventListener('click', downloadQR);
 
-            // ----- Auto‑update triggers -----
-
-            // Color change
             colorRadios.forEach(radio => {
                 radio.addEventListener('change', (e) => {
                     selectedColor = e.target.value;
@@ -719,7 +692,6 @@
                 });
             });
 
-            // Logo selection
             logoFile.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (!file) return;
@@ -736,7 +708,6 @@
                 reader.readAsDataURL(file);
             });
 
-            // Remove logo
             removeLogoBtn.addEventListener('click', () => {
                 logoDataURL = null;
                 logoFile.value = '';
@@ -748,23 +719,18 @@
                 }
             });
 
-            // Brand name input changes: update preview only (no regeneration needed)
             brandInput.addEventListener('input', updateBrandPreview);
 
-            // Generate button
             generateBtn.addEventListener('click', () => {
                 generateQR(linkInput.value);
             });
 
-            // Enter key in link input
             linkInput.addEventListener('keydown', (e) => {
                 if (e.key === 'Enter') {
                     e.preventDefault();
                     generateQR(linkInput.value);
                 }
             });
-
-            // Initialize default color (already set)
         })();
     </script>
 </body>
